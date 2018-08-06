@@ -1,0 +1,32 @@
+import graphene
+from graphene_sqlalchemy import SQLAlchemyObjectType
+from .models import Reading, Device
+
+
+class ReadingNode(SQLAlchemyObjectType):
+    class Meta:
+        model = Reading
+#        interfaces = (graphene.relay.Node,)
+
+
+class DeviceNode(SQLAlchemyObjectType):
+    class Meta:
+        model = Device
+
+
+class Query(graphene.ObjectType):
+    readings = graphene.List(ReadingNode)
+    devices = graphene.List(DeviceNode)
+#    node = graphene.relay.Node.Field()
+
+    def resolve_readings(self, info):
+        query = ReadingNode.get_query(info)
+        return query.all()
+
+    def resolve_devices(self, info):
+        query = DeviceNode.get_query(info)
+        return query.all()
+
+
+schema = graphene.Schema(query=Query)
+

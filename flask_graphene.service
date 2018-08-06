@@ -1,0 +1,19 @@
+[Unit]
+Description="uWSGI server instance configured to serve flask_graphene"
+After=syslog.target
+
+[Service]
+ExecStart=/usr/local/bin/uwsgi --ini /srv/nginx/flask_graphene_project/flask_graphene.ini
+# Requires systemd version 211 or newer
+RuntimeDirectory=uwsgi
+KillSignal=SIGQUIT
+ExecReload=/bin/kill -HUP %MAINPID
+ExecStop=/bin/kill -INT $MAINPID
+Restart=always
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+
+[Install]
+WantedBy=multi-user.target
