@@ -1,3 +1,5 @@
+from sqlalchemy import func
+
 from flask_graphene import db
 
 
@@ -17,5 +19,6 @@ class Reading(db.Model):
     deviceid = db.Column(db.Integer, db.ForeignKey("devices.deviceid"))
     temperature = db.Column(db.Float)
     humidity = db.Column(db.Float)
-    createdatetime = db.Column(db.String(20))
+    createdatetime = db.Column(db.String(19),
+                               default=func.strftime('%Y-%m-%dT%H:%M:%S', 'now'))
 

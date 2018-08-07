@@ -3,6 +3,8 @@
 import os
 import logging
 
+from sqlalchemy.engine import Engine
+from sqlalchemy import event
 from flask import Flask
 from flask.logging import default_handler
 from flask_sqlalchemy import SQLAlchemy
@@ -20,6 +22,7 @@ try:
     try:
         if app.config["DEBUG"]:
             level = logging.DEBUG
+            app.config["SQLALCHEMY_ECHO"] = True
         else:
             level = logging.INFO
     except KeyError:
@@ -28,6 +31,12 @@ try:
 except KeyError:
     handler = default_handler
 root.addHandler(handler)
+
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 db = SQLAlchemy(app)
 
