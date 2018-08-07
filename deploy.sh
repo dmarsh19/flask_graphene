@@ -17,7 +17,8 @@ SRV_DEST=/srv/nginx/${PROJECT_NAME}_project
 python3 -m pip install -r requirements.txt
 
 mkdir -m 0755 $SRV_DEST
-cp -r ${PROJECT_NAME} settings.py wsgi.py ${PROJECT_NAME}.ini atmo.sqlite $SRV_DEST
+cp -r ${PROJECT_NAME} settings.py wsgi.py ${PROJECT_NAME}.ini $SRV_DEST
+gunzip -c atmo.sqlite.gz > $SRV_DEST/atmo.sqlite
 chown -R www-data:www-data $SRV_DEST
 
 mkdir -m 0740 /var/log/${PROJECT_NAME}

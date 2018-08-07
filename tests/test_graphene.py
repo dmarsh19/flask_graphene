@@ -1,3 +1,5 @@
+import os
+import subprocess
 import unittest
 
 from graphene.test import Client
@@ -6,6 +8,18 @@ from flask_graphene.api.schema import schema
 
 
 class ReadingsTestCase(unittest.TestCase):
+    TEST_DB = "atmo.sqlite"
+
+    @classmethod
+    def setUpClass(cls):
+        with open(cls.TEST_DB, 'wb') as f:
+            completed_proc = subprocess.run(["gunzip", "-c", "atmo.sqlite.gz"], stdout=f)
+        if completed_proc.returncode != 0:
+            raise Exception("failed to gunzip test data.")
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove(cls.TEST_DB)
 
     def test_all_readings(self):
         client = Client(schema)
@@ -21,6 +35,18 @@ class ReadingsTestCase(unittest.TestCase):
 
 
 class DevicesTestCase(unittest.TestCase):
+    TEST_DB = "atmo.sqlite"
+
+    @classmethod
+    def setUpClass(cls):
+        with open(cls.TEST_DB, 'wb') as f:
+            completed_proc = subprocess.run(["gunzip", "-c", "atmo.sqlite.gz"], stdout=f)
+        if completed_proc.returncode != 0:
+            raise Exception("failed to gunzip test data.")
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove(cls.TEST_DB)
 
     def test_all_devices(self):
         client = Client(schema)
